@@ -62,10 +62,10 @@ jobs:
           # Install dependencies
           sudo npm install -g @medusajs/medusa-cli
           npm install cross-env --save-dev
-          sudo npx medusa migrations run
+          npx medusa migrations run
           npx medusa user -e anudeep@gmail.com -p anudeep123
 
 
           # Start the application
-          sudo npm run start
+          sudo npm run start &
         EOF
