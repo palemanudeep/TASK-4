@@ -20,7 +20,7 @@ jobs:
 
     - name: Update and Install Dependencies
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Update and install necessary packages
           sudo apt-get update -y
           sudo apt-get upgrade -y
@@ -38,8 +38,8 @@ jobs:
           sudo -u postgres psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'medusabackend') THEN CREATE DATABASE medusabackend; END IF; END \$\$;"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE medusabackend TO medusabackend;"
 
-          # Clone the existing Medusa app repository
-          git clone https://github.com/palemanudeep/Deploy-Medusa-on-AWS-EC2.git ./my-app-store
+          # Clone the existing Medusa app repository using HTTPS
+          git clone https://github.com/your-username/your-existing-repo.git ./my-app-store
           
           # Navigate to the app directory
           cd ./my-app-store
