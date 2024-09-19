@@ -26,7 +26,7 @@ jobs:
           sudo apt-get upgrade -y
           
           # Install Node.js 18.x
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
           sudo apt install -y nodejs
           
           # Install PostgreSQL
@@ -37,6 +37,12 @@ jobs:
           sudo -u postgres psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'medusabackend') THEN CREATE USER medusabackend WITH PASSWORD 'medusa123'; END IF; END \$\$;"
           sudo -u postgres psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'medusabackend') THEN CREATE DATABASE medusabackend; END IF; END \$\$;"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE medusabackend TO medusabackend;"
+          sudo -u postgres psql -c "ALTER USER medusabackend CREATEDB;"
+
+          # Remove the existing directory if it exists
+          if [ -d "./my-app-store" ]; then
+            sudo rm -rf ./my-app-store
+          fi
 
           # Clone the existing Medusa app repository using HTTPS
           git clone https://github.com/your-username/your-existing-repo.git ./my-app-store
@@ -52,7 +58,7 @@ jobs:
           echo "REDIS_URL=redis://localhost:6379" >> .env
 
           # Install dependencies
-          sudo npm install
+          sudo npm install -g @medusajs/medusa-cli
 
           # Start the application
           sudo npm run start
