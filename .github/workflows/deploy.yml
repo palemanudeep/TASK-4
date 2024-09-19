@@ -45,7 +45,7 @@ jobs:
           fi
 
           # Clone the existing Medusa app repository using HTTPS
-          git clone https://github.com/your-username/your-existing-repo.git ./my-app-store
+          git clone https://github.com/palemanudeep/Deploy-Medusa-on-AWS-EC2.git ./my-app-store
           
           # Navigate to the app directory
           cd ./my-app-store
