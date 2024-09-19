@@ -20,7 +20,7 @@ jobs:
 
     - name: Update and Install Dependencies
       run: |
-        ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -o ConnectTimeout=60 ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           # Update and install necessary packages
           sudo apt-get update -y
           sudo apt-get upgrade -y
