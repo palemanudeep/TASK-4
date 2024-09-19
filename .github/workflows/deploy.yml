@@ -24,8 +24,12 @@ jobs:
           # Update and install necessary packages
           sudo apt-get update -y
           sudo apt-get upgrade -y
-          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          
+          # Install Node.js 18.x
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y nodejs
+          
+          # Install PostgreSQL
           sudo apt install -y postgresql postgresql-contrib
           sudo systemctl start postgresql
 
