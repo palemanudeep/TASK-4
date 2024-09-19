@@ -1,0 +1,41 @@
+name: Deploy Medusa Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Update and Install Dependencies
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          # Update and install necessary packages
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt install -y nodejs
+          sudo apt install -y postgresql postgresql-contrib
+          sudo systemctl start postgresql
+
+          # Set up PostgreSQL database and user
+          sudo -u postgres psql -c "CREATE USER medusabackend WITH PASSWORD 'medusa123';"
+          sudo -u postgres psql -c "CREATE DATABASE medusabackend;"
+          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE medusabackend TO medusabackend;"
+          sudo -u postgres psql -c "ALTER USER medusabackend CREATEDB;"
+
+          # Install Medusa CLI and create the Medusa app
+          sudo npm install -g @medusajs/medusa-cli
+          npx create-medusa-app@latest ./medusa-app --yes --name my-app-store --email anudeep@gmail.com --database-type postgres --database-username medusabackend --database-password medusa123 --no-storefront
+        EOF
