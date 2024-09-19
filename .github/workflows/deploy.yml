@@ -41,9 +41,10 @@ jobs:
 
           # Install Medusa CLI and create the Medusa app
           sudo npm install -g @medusajs/medusa-cli
-          sudo npx create-medusa-app@latest ./my-app-store --yes --name my-app-store --email anudeep@gmail.com --database-type postgres --database-username medusabackend --database-password medusa123 --no-storefront
+          sudo npx create-medusa-app@latest   --name my-app-store --email anudeep@gmail.com --database-type postgres --database-username medusabackend --database-password medusa123 --no-storefront
 
           # Navigate to the app directory and start the application
-          cd ./my-app-store
+          exit
+          cd my-app-store
           sudo npm run start
         EOF
