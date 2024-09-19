@@ -33,17 +33,27 @@ jobs:
           sudo apt install -y postgresql postgresql-contrib
           sudo systemctl start postgresql
 
-          # Set up PostgreSQL database and user
-          sudo -u postgres psql -c "CREATE USER medusabackend WITH PASSWORD 'medusa123';"
-          sudo -u postgres psql -c "CREATE DATABASE medusabackend;"
+          # Set up PostgreSQL database and user if not already created
+          sudo -u postgres psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'medusabackend') THEN CREATE USER medusabackend WITH PASSWORD 'medusa123'; END IF; END \$\$;"
+          sudo -u postgres psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'medusabackend') THEN CREATE DATABASE medusabackend; END IF; END \$\$;"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE medusabackend TO medusabackend;"
-          sudo -u postgres psql -c "ALTER USER medusabackend CREATEDB;"
 
-          # Install Medusa CLI and create the Medusa app
-          sudo npm install -g @medusajs/medusa-cli
-          sudo npx create-medusa-app@latest ./my-app-store --yes --name my-app-store --email anudeep@gmail.com --database-type postgres --database-username medusabackend --database-password medusa123 --no-storefront
-
-          # Navigate to the app directory and start the application
+          # Clone the existing Medusa app repository
+          git clone https://github.com/palemanudeep/Deploy-Medusa-on-AWS-EC2.git ./my-app-store
+          
+          # Navigate to the app directory
           cd ./my-app-store
+
+          # Create .env file if it does not exist
+          touch .env
+          
+          # Modify the .env file
+          echo "DATABASE_URL=postgres://medusabackend:medusa123@localhost:5432/medusabackend" > .env
+          echo "REDIS_URL=redis://localhost:6379" >> .env
+
+          # Install dependencies
+          sudo npm install
+
+          # Start the application
           sudo npm run start
         EOF
