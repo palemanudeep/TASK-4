@@ -67,5 +67,5 @@ jobs:
 
 
           # Start the application
-          sudo npm run start &
+          nohup sudo npm run start &> medusa.log &
         EOF
