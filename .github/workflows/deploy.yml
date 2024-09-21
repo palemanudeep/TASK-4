@@ -71,5 +71,4 @@ jobs:
           nohup sudo npm run start &> medusa.log &
 
           echo "Medusa deployment initiated."
-
         EOF
